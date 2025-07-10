@@ -1,0 +1,38 @@
+table Empleado
+	lineageTag: c74c4bf6-49e1-4964-b051-2f0d4824fb7a
+
+	column Empleado
+		dataType: string
+		lineageTag: b58a0234-c469-4c35-a4a8-df242a5ee5ee
+		summarizeBy: none
+		sourceColumn: Empleado
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Empleado = m
+		mode: import
+		queryGroup: Pivotes
+		source =
+				let
+				    Origen = Excel.Workbook(File.Contents("C:\Users\adrian.arriaga\OneDrive - Adecco\Documents\Adrian\Didi\Dashboard_Ventas_Cancelaciones\CANCELACION.xlsx"), null, true),
+				    report_Sheet = Origen{[Item="report",Kind="Sheet"]}[Data],
+				    #"Encabezados promovidos1" = Table.PromoteHeaders(report_Sheet, [PromoteAllScalars=true]),
+				    #"Tipo cambiado4" = Table.TransformColumnTypes(#"Encabezados promovidos1",{{"ID de la encuesta", Int64.Type}, {"Rótulo de la encuesta", type text}, {"Red", type text}, {"Cadena", type text}, {"PDV", type text}, {"División territorial", type text}, {"Ciudad", type text}, {"Regional", type text}, {"Fecha y hora de la encuesta", type datetime}, {"Empleado", type text}, {"ID Pedido", type text}, {"Motivo de cancelación", type text}, {"¿Cuál es el precio que está registrado en la sucursal?", type any}, {"¿Cuál es el precio registrado en la aplicación?", type any}, {"¿Qué promoción tienen en la sucursal?", type any}, {"¿Cuál es la promoción que tienen en la aplicación?", type any}, {"Detalles de cancelación", type text}}),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Tipo cambiado4",{{"ID de la encuesta", Int64.Type}, {"Rótulo de la encuesta", type text}, {"Red", type text}, {"Cadena", type text}, {"PDV", type text}, {"División territorial", type text}, {"Ciudad", type text}, {"Regional", type text}, {"Fecha y hora de la encuesta", type datetime}, {"Empleado", type text}, {"ID Pedido", type text}, {"Motivo de cancelación", type text}, {"¿Cuál es el precio que está registrado en la sucursal?", type any}, {"¿Cuál es el precio registrado en la aplicación?", type any}, {"¿Qué promoción tienen en la sucursal?", type any}, {"¿Cuál es la promoción que tienen en la aplicación?", type any}, {"Detalles de cancelación", type text}}),
+				    #"Valor reemplazado" = Table.ReplaceValue(#"Tipo cambiado",null,"Bogotá D.C.",Replacer.ReplaceValue,{"División territorial"}),
+				    #"Valor reemplazado1" = Table.ReplaceValue(#"Valor reemplazado",null,"Bogotá",Replacer.ReplaceValue,{"Ciudad"}),
+				    #"Columnas con nombre cambiado" = Table.RenameColumns(#"Valor reemplazado1",{{"Fecha y hora de la encuesta", "Fecha"}}),
+				    #"Tipo cambiado1" = Table.TransformColumnTypes(#"Columnas con nombre cambiado",{{"Fecha", type date}, {"Motivo de la cancelación por repartidor", type text}}),
+				    #"Poner En Mayúsculas Cada Palabra" = Table.TransformColumns(#"Tipo cambiado1",{{"Motivo de la cancelación por repartidor", Text.Proper, type text}, {"Detalles de cancelación", Text.Proper, type text}}),
+				    #"Otras columnas quitadas" = Table.SelectColumns(#"Poner En Mayúsculas Cada Palabra",{"Empleado"}),
+				    #"Duplicados quitados" = Table.Distinct(#"Otras columnas quitadas"),
+				    #"Poner En Mayúsculas Cada Palabra1" = Table.TransformColumns(#"Duplicados quitados",{{"Empleado", Text.Proper, type text}}),
+				    #"Filas filtradas" = Table.SelectRows(#"Poner En Mayúsculas Cada Palabra1", each true),
+				    #"Duplicados quitados1" = Table.Distinct(#"Filas filtradas")
+				in
+				    #"Duplicados quitados1"
+
+	annotation PBI_NavigationStepName = Navegación
+
+	annotation PBI_ResultType = Table
+

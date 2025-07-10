@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "DASHBOARD_DIDI"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "353ca8b2-844f-4680-8583-3bf2b5c01318"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "DASHBOARD_DIDI"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "91d16c54-2136-4d7f-9f13-b15e914b6f31"
+  }
+}
